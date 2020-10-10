@@ -32,13 +32,26 @@ namespace cx.rain.qqmini.repeater
 
         public override QMEventHandlerTypes OnReceiveGroupMessage(QMGroupMessageEventArgs e)
         {
-            LastMessages[e.FromGroup] = new Tuple<QQ, Message>(e.FromQQ, e.Message);
+            if (!LastMessages.ContainsKey(e.FromGroup))
+            {
+                LastMessages.Add(e.FromGroup, new Tuple<QQ, Message>(e.FromQQ, e.Message));
+            }
+            else
+            {
+                LastMessages[e.FromGroup] = new Tuple<QQ, Message>(e.FromQQ, e.Message);
+            }
 
-            if (MessageSenders[e.FromGroup] == null)
+            if (!MessageSenders.ContainsKey(e.FromGroup))
             {
                 MessageSenders[e.FromGroup] = new HashSet<QQ>();
             }
+
             MessageSenders[e.FromGroup].Add(e.FromQQ);
+
+            if (!RepeatedMessages.ContainsKey(e.FromGroup))
+            {
+                RepeatedMessages.Add(e.FromGroup, null);
+            }
 
             if (RepeatedMessages[e.FromGroup] != null && e.Message == RepeatedMessages[e.FromGroup])
             {
