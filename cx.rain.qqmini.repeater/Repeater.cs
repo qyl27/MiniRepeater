@@ -47,9 +47,9 @@ namespace cx.rain.qqmini.repeater
             groupLog[e.FromGroup].Add(new KeyValuePair<QQ, Message>(e.FromQQ, e.Message));
             groupLog[e.FromGroup].RemoveAt(0);
 
-            //如果最后一次记录和倒数第二条记录一样，且不和第三条记录相同就复读
-            if (groupLog[e.FromGroup][2].Value == groupLog[e.FromGroup][1].Value &&
-                groupLog[e.FromGroup][2].Value != groupLog[e.FromGroup][0].Value)
+            //如果当前消息和倒数第二条记录一样，且不和第三条记录相同就复读
+            if (e.Message == groupLog[e.FromGroup][1].Value &&
+                e.Message != groupLog[e.FromGroup][0].Value)
             {
                 //复读！ 
                 QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message);
