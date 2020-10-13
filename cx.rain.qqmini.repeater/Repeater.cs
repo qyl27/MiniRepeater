@@ -8,7 +8,6 @@ namespace cx.rain.qqmini.repeater
     public class Repeater : PluginBase
     {
         private static readonly Dictionary<Group, List<KeyValuePair<QQ, Message>>> groupLog = new Dictionary<Group, List<KeyValuePair<QQ, Message>>>();
-        private static readonly List<KeyValuePair<QQ, Message>> messageLog = new List<KeyValuePair<QQ, Message>>();
 
         public override PluginInfo PluginInfo => new PluginInfo()
         {
