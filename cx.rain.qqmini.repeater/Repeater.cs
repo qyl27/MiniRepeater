@@ -37,8 +37,8 @@ namespace cx.rain.qqmini.repeater
             }
 
             //防止单人复读
-            if (groupLog[e.FromGroup][3].Key == e.FromQQ &&
-                groupLog[e.FromGroup][3].Value == e.Message)
+            if (groupLog[e.FromGroup][2].Key == e.FromQQ &&
+                groupLog[e.FromGroup][2].Value == e.Message)
             {
                 return QMEventHandlerTypes.Continue;
             }
@@ -49,7 +49,7 @@ namespace cx.rain.qqmini.repeater
 
             //如果最后一次记录和倒数第二条记录一样，且不和第三条记录相同就复读
             if (groupLog[e.FromGroup][2].Value == groupLog[e.FromGroup][1].Value &&
-                groupLog[e.FromGroup][1].Value != groupLog[e.FromGroup][0].Value)
+                groupLog[e.FromGroup][2].Value != groupLog[e.FromGroup][0].Value)
             {
                 //复读！ 
                 QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message);
