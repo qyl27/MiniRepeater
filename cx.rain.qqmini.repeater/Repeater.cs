@@ -7,9 +7,8 @@ namespace cx.rain.qqmini.repeater
 {
     public class Repeater : PluginBase
     {
-        private static readonly Dictionary<Group, Tuple<QQ, Message>> LastMessages = new Dictionary<Group, Tuple<QQ, Message>>();
-        private static readonly Dictionary<Group, HashSet<QQ>> MessageSenders = new Dictionary<Group, HashSet<QQ>>();
-        private static readonly Dictionary<Group, Message> RepeatedMessages = new Dictionary<Group, Message>();
+        private static readonly Dictionary<Group, List<KeyValuePair<QQ, Message>>> groupLog = new Dictionary<Group, List<KeyValuePair<QQ, Message>>>();
+        private static readonly List<KeyValuePair<QQ, Message>> messageLog = new List<KeyValuePair<QQ, Message>>();
 
         public override PluginInfo PluginInfo => new PluginInfo()
         {
@@ -32,38 +31,29 @@ namespace cx.rain.qqmini.repeater
 
         public override QMEventHandlerTypes OnReceiveGroupMessage(QMGroupMessageEventArgs e)
         {
-            if (!LastMessages.ContainsKey(e.FromGroup))
+            //添加没有记录的新群
+            if (groupLog.ContainsKey(e.FromGroup) == false)
             {
-                LastMessages.Add(e.FromGroup, new Tuple<QQ, Message>(e.FromQQ, e.Message));
-            }
-            else
-            {
-                LastMessages[e.FromGroup] = new Tuple<QQ, Message>(e.FromQQ, e.Message);
+                groupLog.Add(e.FromGroup, new List<KeyValuePair<QQ, Message>>(3));
             }
 
-            if (!MessageSenders.ContainsKey(e.FromGroup))
+            //防止单人复读
+            if (groupLog[e.FromGroup][3].Key == e.FromQQ &&
+                groupLog[e.FromGroup][3].Value == e.Message)
             {
-                MessageSenders[e.FromGroup] = new HashSet<QQ>();
-            }
-
-            MessageSenders[e.FromGroup].Add(e.FromQQ);
-
-            if (!RepeatedMessages.ContainsKey(e.FromGroup))
-            {
-                RepeatedMessages.Add(e.FromGroup, null);
-            }
-
-            if (RepeatedMessages[e.FromGroup] != null && e.Message == RepeatedMessages[e.FromGroup])
-            {
-                MessageSenders[e.FromGroup].Clear();
                 return QMEventHandlerTypes.Continue;
             }
 
-            if (MessageSenders[e.FromGroup].Count >= 3)
+            //添加消息记录
+            groupLog[e.FromGroup].Add(new KeyValuePair<QQ, Message>(e.FromQQ, e.Message));
+            groupLog[e.FromGroup].RemoveAt(0);
+
+            //如果最后一次记录和倒数第二条记录一样，且不和第三条记录相同就复读
+            if (groupLog[e.FromGroup][2].Value == groupLog[e.FromGroup][1].Value &&
+                groupLog[e.FromGroup][1].Value != groupLog[e.FromGroup][0].Value)
             {
+                //复读！ 
                 QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message);
-                RepeatedMessages[e.FromGroup] = e.Message;
-                MessageSenders[e.FromGroup].Clear();
             }
 
             return QMEventHandlerTypes.Continue;
