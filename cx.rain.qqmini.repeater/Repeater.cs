@@ -59,6 +59,12 @@ namespace cx.rain.qqmini.repeater
                 return QMEventHandlerTypes.Continue;
             }
 
+            if (e.Message == LastMessages[e.FromGroup].Item2)
+            {
+                MessageSenders[e.FromGroup].Clear();
+                return QMEventHandlerTypes.Continue;
+            }
+
             if (MessageSenders[e.FromGroup].Count >= 3)
             {
                 QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message);
