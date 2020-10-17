@@ -53,13 +53,13 @@ namespace cx.rain.qqmini.repeater
                 RepeatedMessages.Add(e.FromGroup, null);
             }
 
-            if (RepeatedMessages[e.FromGroup] != null && e.Message == RepeatedMessages[e.FromGroup])
+            if (RepeatedMessages[e.FromGroup] != null && e.Message.Text == RepeatedMessages[e.FromGroup].Text)
             {
                 MessageSenders[e.FromGroup].Clear();
                 return QMEventHandlerTypes.Continue;
             }
 
-            if (e.Message == LastMessages[e.FromGroup].Item2)
+            if (e.Message.Text == LastMessages[e.FromGroup].Item2.Text)
             {
                 MessageSenders[e.FromGroup].Clear();
                 return QMEventHandlerTypes.Continue;
@@ -67,7 +67,7 @@ namespace cx.rain.qqmini.repeater
 
             if (MessageSenders[e.FromGroup].Count >= 3)
             {
-                QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message);
+                QMApi.SendGroupMessage(e.RobotQQ, e.FromGroup, e.Message.Text);
                 RepeatedMessages[e.FromGroup] = e.Message;
                 MessageSenders[e.FromGroup].Clear();
             }
