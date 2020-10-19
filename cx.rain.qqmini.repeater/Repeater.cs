@@ -17,7 +17,7 @@ namespace cx.rain.qqmini.repeater
             Description = "一个简单的群聊复读机插件。",
             Name = "Mini复读机",
             PackageId = "cx.rain.qqmini.repeater",
-            Version = new Version(1, 0, 0, 0)
+            Version = new Version(1, 1, 0, 0)
         };
 
         public override void OnInitialize()
