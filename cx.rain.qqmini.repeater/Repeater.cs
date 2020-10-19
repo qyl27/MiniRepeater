@@ -22,11 +22,14 @@ namespace cx.rain.qqmini.repeater
 
         public override void OnInitialize()
         {
+            QMLog.Info("[Mini复读机] 加载成功！");
+
             // Todo: Configuration files.
         }
 
         public override void OnUninitialize()
         {
+            QMLog.Info("[Mini复读机] 卸载成功！");
             // Todo: Configuration files.
         }
 
@@ -54,12 +57,6 @@ namespace cx.rain.qqmini.repeater
             }
 
             if (RepeatedMessages[e.FromGroup] != null && e.Message.Text == RepeatedMessages[e.FromGroup].Text)
-            {
-                MessageSenders[e.FromGroup].Clear();
-                return QMEventHandlerTypes.Continue;
-            }
-
-            if (e.Message.Text == LastMessages[e.FromGroup].Item2.Text)
             {
                 MessageSenders[e.FromGroup].Clear();
                 return QMEventHandlerTypes.Continue;
